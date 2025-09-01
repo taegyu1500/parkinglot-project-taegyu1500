@@ -75,7 +75,7 @@ class ParkingStore:
         r = car['r']
         c = car['c']
         entry_time = datetime.datetime.fromisoformat(car['entry_time'])
-        exit_time = datetime.datetime.utcnow()
+        exit_time = datetime.datetime.now()
         is_seasonal = car.get('is_seasonal', False)
         print(entry_time, exit_time, is_seasonal)
         fee, minutes = self.compute_fee(entry_time, exit_time, is_seasonal)

@@ -1,0 +1,620 @@
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --background-color: #f8f9fa;
+  --text-color: #343a40;
+  --border-radius: 12px;
+  --spacing-unit: 1rem;
+  --top-reserved: 250px;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  user-select: none; /* 터치 시 텍스트 선택 방지 */
+  -webkit-tap-highlight-color: transparent; /* 터치 시 하이라이트 제거 */
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden; /* 페이지 스크롤 금지; layout must fit 100vh */
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* 정확히 뷰포트에 맞춤 */
+  padding: 0; /* 내부 여백 최소화하여 가로 스크롤 발생 방지 */
+}
+
+.full-height {
+  min-height: 100vh; /* ensure page fills viewport */
+}
+
+* { box-sizing: border-box; }
+
+.large-button {
+  width: 90%;
+  min-height: 12vh; /* 줄여서 전체가 한 화면에 들어가도록 조정 */
+  max-height: 18vh;
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: white;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  margin-bottom: calc(var(--spacing-unit) * 2);
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.home-actions {
+  display: flex;
+  width: 100%;
+  gap: 20px;
+  justify-content: space-between;
+}
+.home-actions .large-button {
+  width: 48%;
+}
+
+.app-container h1 {
+  font-size: 2rem;
+  margin: 6px 0 8px;
+}
+
+.large-button:active {
+  transform: translateY(4px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.large-button.success {
+  background-color: var(--success-color);
+}
+
+.large-button.danger {
+  background-color: var(--danger-color);
+}
+
+.numeric-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(var(--spacing-unit,12px) / 2);
+  width: 100%;
+  max-width: 420px;
+  margin-top: calc(var(--spacing-unit,12px) * 0.8);
+  margin-bottom: 12px; /* bottom spacing so keypad isn't flush */
+}
+
+.key.confirm {
+  background-color: var(--success-color);
+  color: white;
+}
+.key.confirm.disabled {
+  background-color: #c6e7d1; /* lighter */
+  color: rgba(255,255,255,0.7);
+  cursor: default;
+}
+
+.numeric-keypad .key {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* 정사각형 유지 */
+  position: relative;
+  background-color: white;
+  border: 2px solid #ddd;
+  border-radius: var(--border-radius);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.numeric-keypad .key span {
+  font-size: 1.9rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.numeric-keypad .key:active {
+  background-color: #e9ecef;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.numeric-keypad .key.special {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.numeric-keypad .key.special span {
+  color: white;
+  font-size: 1.8rem;
+}
+
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.9em 1.6em;
+  font-size: 1.05em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+/* --- Alert Component CSS --- */
+.custom-alert-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px); /* 배경을 흐리게 */
+}
+
+.custom-alert-box {
+  background-color: white;
+  padding: 28px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 90%;
+  width: 500px;
+  transform: scale(0.9);
+  animation: popIn 0.3s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.custom-alert-box h2 {
+  font-size: 1.6rem;
+  color: var(--primary-color);
+  margin-bottom: 25px;
+}
+
+.custom-alert-box p {
+  font-size: 1.2rem;
+  color: var(--text-color);
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.custom-alert-box button {
+  min-width: 120px;
+  min-height: 55px;
+  padding: var(--spacing-unit) calc(var(--spacing-unit) * 1.5);
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.custom-alert-box button:active {
+  transform: scale(0.98);
+  background-color: darken(var(--primary-color), 10%);
+}
+
+/* --- Vehicle Number Input Fields CSS --- */
+.car-number-input-container {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem; /* 칸 사이 간격 */
+  margin-bottom: 1.2rem;
+}
+
+.car-number-digit {
+  width: 12.5vw;
+  aspect-ratio: 1 / 1; /* keep perfect square */
+  min-width: 60px;
+  max-width: 110px;
+  background-color: white;
+  border: 2px solid var(--secondary-color);
+  border-radius: var(--border-radius);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: clamp(1.6rem, 2.4vw, 2rem);
+  font-weight: bold;
+  color: var(--text-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.car-number-digit.focused {
+  border-color: var(--primary-color);
+  transform: scale(1.05);
+}
+
+/* Parking grid styles */
+.parking-grid.center {
+  display: grid;
+  /* use a fixed per-row height computed from viewport so 10 rows fit */
+  --cell-height: calc((100vh - 160px) / 10); /* adjust 160px for header/keypad area */
+  grid-auto-rows: var(--cell-height);
+  gap: 8px; /* slightly tighter vertical spacing */
+  width: 100%;
+  max-width: min(1100px, 96vw);
+  margin: 0 auto;
+  max-height: calc(100vh - 120px); /* ensure grid area never exceeds viewport */
+  padding-bottom: 12px; /* breathing room for last row */
+  box-sizing: border-box;
+}
+
+.parking-row {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px; /* slightly reduced horizontal gap */
+  width: 100%;
+}
+.parking-cell {
+  position: relative;
+  overflow: hidden;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+
+  /* visible border so cell boundaries are clear */
+  border: 2px solid rgba(0,0,0,0.06);
+  background: #ffffff;
+  transition: transform 0.08s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+.grid-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: min(1100px, 96vw);
+  padding: 0 6px;
+  box-sizing: border-box;
+  margin: 6px auto 6px;
+  justify-content: space-between;
+}
+.icon-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.8rem;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.icon-btn:active { transform: scale(0.98); }
+.grid-wrapper {
+  padding: 6px 0 8px;
+  align-items: center; /* center vertically so last row isn't flush */
+}
+/* top car number */
+.cell-number-top {
+  font-weight: 700;
+  text-align: center;
+  font-size: clamp(0.8rem, 1.1vw, 1rem);
+  line-height: 1.05;
+  max-height: 1.8em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+.parking-cell.available,
+.parking-cell.free {
+  background: #ffffff;
+  color: #111;
+}
+.parking-cell.unavailable {
+  background: #f7f7f7;
+  color: #888;
+}
+.parking-cell.occupied {
+  background: #fff8f4;
+  color: #222;
+}
+.cell-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px;
+  box-sizing: border-box;
+}
+/* 버튼과 라벨이 함께 들어가도록 버튼 크기 제한 및 스타일 조정 */
+.cell-action {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+}
+/* 슬롯 버튼 */
+.slot-btn {
+  max-height: calc(var(--cell-height, 60px) * 0.34);
+  font-size: clamp(0.78rem, 1.0vw, 0.95rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cell-action button {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--success-color);
+  color: #fff;
+  border: none;
+  font-size: clamp(0.78rem, 1.0vw, 0.95rem);
+  min-width: 48%;
+  max-width: 86%;
+  max-height: calc(var(--cell-height, 60px) * 0.34); /* 버튼 높이 비율을 작게 조정 */
+  height: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+
+/* 작은 화면/높이에서 버튼 텍스트가 깨지지 않도록 줄바꿈 가능하게 */
+.slot-btn span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* disabled labels: seasonal (blue) vs regular (red) */
+.disabled-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  font-size: 2.2rem;
+  box-sizing: border-box;
+  padding: 4px;
+}
+
+/* seasonal(정기권) : 파란 테두리 + 연한 파란 배경 */
+.disabled-label.seasonal {
+  background: linear-gradient(180deg, rgba(52,152,219,0.06), rgba(52,152,219,0.03));
+  border: 2px solid rgba(52,152,219,0.45);
+  color: #0b5fa5;
+  box-shadow: inset 0 0 0 4px rgba(52,152,219,0.02);
+}
+
+/* regular(일반권) : 빨간 트럭 스타일 */
+.disabled-label.regular {
+  background: linear-gradient(180deg, rgba(220,53,69,0.06), rgba(220,53,69,0.03));
+  border: 2px solid rgba(220,53,69,0.45);
+  color: #9b1e1e;
+  box-shadow: inset 0 0 0 4px rgba(220,53,69,0.02);
+}
+
+.parking-grid-with-labels {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+/* Use explicit grid rows: one header row (48px) + 10 equal data rows */
+.grid-table {
+  display: grid;
+  grid-template-columns: 48px repeat(10, 1fr); /* left labels + 10 columns */
+  grid-template-rows: 48px repeat(10, var(--cell-height));
+  gap: var(--row-gap);
+  width: 100%;
+  max-width: min(1100px, 96vw);
+  padding: 6px;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.grid-table,
+.parking-grid.center {
+  --available-height: calc(100vh - var(--top-reserved));
+  --row-gap: 6px;
+  --cell-height: calc((var(--available-height) - (var(--row-gap) * 9)) / 10);
+}
+
+/* Ensure header and row label heights exactly match the header row */
+.corner-cell,
+.col-header-cell,
+.row-label {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+
+/* parking cells: fixed row height via grid-auto-rows and full-width columns */
+.parking-cell {
+  height: 100%;
+  min-height: 0;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+
+/* ensure inner content is vertically stacked and centered */
+.parking-cell .cell-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* car number displayed above the button, centered */
+.cell-number-top {
+  font-weight: 700;
+  text-align: center;
+  font-size: clamp(0.75rem, 1.0vw, 0.95rem);
+  line-height: 1.05;
+  max-height: 1.6em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+.cell-label {
+  margin: 4px 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* slot button full width but not too tall */
+.slot-btn {
+  padding: 8px 12px;
+  min-width: 60%;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+/* unavailable visual state */
+.unavailable {
+  opacity: 0.75;
+}
+
+/* icon label */
+.disabled-label {
+  font-size: 1.4rem;
+  text-align: center;
+  width: 100%;
+}
+
+/* clickable cell visual */
+.parking-cell.clickable {
+  cursor: pointer;
+}
+.parking-cell.clickable:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+}
+
+/* exit-target highlighting */
+.parking-cell.exit-target {
+  border-color: #ff9f43; /* 강조색 */
+  box-shadow: inset 0 0 0 3px rgba(255,159,67,0.06);
+}
+
+
+/* 안전장치: 버튼이 셀보다 커지는 경우 텍스트를 줄여서 깨지지 않게 함 */
+.slot-btn span { 
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* simplified exit label inside cell (small badge) */
+.exit-label {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(255,159,67,0.12);
+  color: #ff8c2a;
+  font-weight: 700;
+  font-size: clamp(0.78rem, 1.0vw, 0.95rem);
+  white-space: nowrap;
+}
+.cell-vacant {
+  /* 입차용 비어있는 셀: 연한 초록 배경 + 녹색 대시 테두리 */
+  background: rgba(46, 204, 113, 0.06); /* subtle green tint */
+  border: 2px dashed rgba(46, 204, 113, 0.35); /* green dashed border */
+  border-radius: 8px;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* 입차 가능한 셀 강조 (클릭 가능한 상태) */
+.parking-cell.park-target {
+  border-color: #2ecc71; /* 선명한 녹색 */
+  box-shadow: inset 0 0 0 3px rgba(46, 204, 113, 0.06);
+  transition: transform 0.08s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+.parking-cell.park-target:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(46, 204, 113, 0.12);
+  border-color: #27ae60;
+}
+
+.cell-number-bold {
+  font-size: 1.8rem; /* 큰 글씨 */
+  font-weight: 700;  /* bold */
+  color: var(--text-color);
+  text-align: center;
+  display: inline-block;
+}
+
+/* entry-time: 차량 입차 후 경과 분을 작은 글씨로 표시 */
+.entry-time {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.85rem; /* 작은 글씨 */
+  color: var(--secondary-color);
+  opacity: 0.95;
+}
