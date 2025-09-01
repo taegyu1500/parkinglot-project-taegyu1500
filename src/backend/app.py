@@ -42,9 +42,9 @@ def park():
     c = data.get('c')
     carNumber = data.get('carNumber')
     is_seasonal = data.get('isSeasonal', False)
-    grid = store.get_grid()
     if(carNumber in store.cars):
         return jsonify({'ok': False, 'message': '이미 주차중인 차량입니다'}), 400
+    grid = store.get_grid()
     if r is None or c is None or not carNumber:
         return jsonify({'ok': False, 'message': 'r, c, carNumber required'}), 400
     ok, message = store.park_at(int(r), int(c), str(carNumber), is_seasonal)
