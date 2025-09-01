@@ -10,8 +10,8 @@ dist_dir = os.path.join(backend_dir, 'dist')
 # serve static files from backend/dist when present
 app = Flask(__name__, static_folder=dist_dir, static_url_path='')
 CORS(app)
-store = ParkingStore(rows=5, cols=10)
-
+store = ParkingStore(rows=10, cols=10)
+seasonal_list = []
 
 @app.route('/api/')
 def api_index():
@@ -29,6 +29,11 @@ def get_spot(r, c):
         return jsonify({'ok': False, 'message': 'invalid spot'}), 400
     return jsonify(store.get_grid()[r][c])
 
+@app.route('/api/seasonal/<carNumber>', methods=['GET'])
+def get_seasonal(carNumber):
+    if carNumber in store.seasonal_cars:
+        return jsonify({'ok': True})
+    return jsonify({'ok': False}), 404
 
 @app.route('/api/park', methods=['POST'])
 def park():
@@ -36,11 +41,15 @@ def park():
     r = data.get('r')
     c = data.get('c')
     carNumber = data.get('carNumber')
+    is_seasonal = data.get('isSeasonal', False)
+    grid = store.get_grid()
+    if(carNumber in store.cars):
+        return jsonify({'ok': False, 'message': '이미 주차중인 차량입니다'}), 400
     if r is None or c is None or not carNumber:
         return jsonify({'ok': False, 'message': 'r, c, carNumber required'}), 400
-    ok, message = store.park_at(int(r), int(c), str(carNumber))
+    ok, message = store.park_at(int(r), int(c), str(carNumber), is_seasonal)
     status = 200 if ok else 400
-    return jsonify({'ok': ok, 'message': message, 'grid': store.get_grid()}), status
+    return jsonify({'ok': ok, 'message': message, 'grid': grid}), status
 
 
 @app.route('/api/exit', methods=['POST'])
