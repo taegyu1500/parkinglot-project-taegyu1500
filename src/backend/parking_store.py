@@ -7,7 +7,7 @@ class ParkingStore:
         self.rows = rows
         self.cols = cols
         # grid cells: { available: bool, carNumber: str | None }
-        self.grid = [[{'available': True, 'carNumber': None, 'is_seasonal': False} for _ in range(cols)] for _ in range(rows)]
+        self.grid = [[{'available': True, 'carNumber': None, 'is_seasonal': False, 'entry_time': None} for _ in range(cols)] for _ in range(rows)]
         # cars: carNumber -> { r, c, entry_time(iso) }
         self.cars = {}
         self.seasonal_cars = set()
@@ -56,8 +56,9 @@ class ParkingStore:
         self.grid[r][c]['available'] = False
         self.grid[r][c]['carNumber'] = carNumber
         self.grid[r][c]['is_seasonal'] = isSeasonal
-        entry_time = datetime.datetime.utcnow()
+        entry_time = datetime.datetime.now()
         self.cars[carNumber] = {'r': r, 'c': c, 'entry_time': entry_time.isoformat(), 'is_seasonal': isSeasonal}
+        self.grid[r][c]['entry_time'] = entry_time.isoformat()
         if isSeasonal:
             self.seasonal_cars.add(carNumber)
         # c+1은 A,B,C, ...
@@ -83,6 +84,7 @@ class ParkingStore:
         self.grid[r][c]['available'] = True
         self.grid[r][c]['carNumber'] = None
         self.grid[r][c]['is_seasonal'] = False
+        self.grid[r][c]['entry_time'] = None
         # remove from cars
         del self.cars[carNumber]
         return {
